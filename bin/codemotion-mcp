@@ -1,0 +1,6 @@
+#!/bin/sh
+# Code Motion's tool server for coding agents (Claude Code, OpenCode, Codex). Agents start this file; it finds
+# Node 22+ itself, so the connection keeps working after Node is updated or switched with nvm.
+DIR="$(cd "$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")/.." && pwd)"
+NODE="$(sh "$DIR/bin/find-node.sh")" || { echo "Code Motion: Node.js 22 or newer was not found" >&2; exit 1; }
+exec "$NODE" "$DIR/server/mcp.js" "$@"

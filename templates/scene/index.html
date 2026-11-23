@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scene</title>
+<style>
+  /* transparent page: the scene can sit over a video on a higher track */
+  html, body { margin: 0; background: transparent; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script>
+// A Code Motion scene. The rules (also in the project's CLAUDE.md / AGENTS.md):
+//   window.renderOut(t)  draws second t of the scene synchronously; any t, in any order (no Date.now(), no unseeded random)
+//   window.READY = true  once fonts and images are loaded
+//   scene.json           { "duration": seconds, "transparent": true|false }
+(function () {
+  const cv = document.getElementById('c'), g = cv.getContext('2d'), W = cv.width, H = cv.height;
+  const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+  const ease = x => { x = clamp(x); return 1 - Math.pow(1 - x, 3); };
+  const TEXT = 'Your title here', SUB = 'Made with Code Motion', DUR = 5;
+
+  window.renderOut = function (t) {
+    g.clearRect(0, 0, W, H);
+    const inK = ease(t / 0.6), outK = ease((t - (DUR - 0.6)) / 0.6), k = inK * (1 - outK);
+    if (k <= 0) return;
+    const x = 120, y = H - 260;
+    g.save();
+    g.globalAlpha = k;
+    g.fillStyle = 'rgba(12,14,22,0.82)';
+    const barW = 980 * ease(t / 0.5) * (1 - outK);
+    g.fillRect(x, y, barW, 150);
+    g.fillStyle = '#7c5cff'; g.fillRect(x, y, 10, 150);
+    g.fillStyle = '#fff'; g.font = '700 64px system-ui, sans-serif'; g.textBaseline = 'top';
+    g.fillText(TEXT, x + 44 - (1 - inK) * 40, y + 24);
+    g.fillStyle = 'rgba(255,255,255,0.7)'; g.font = '400 34px system-ui, sans-serif';
+    g.fillText(SUB, x + 46 - (1 - inK) * 60, y + 98);
+    g.restore();
+  };
+  document.fonts.ready.then(() => { window.renderOut(0); window.READY = true; });
+})();
+</script>
+</body>
+</html>

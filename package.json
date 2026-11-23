@@ -1,0 +1,16 @@
+{
+  "name": "codemotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Code Motion: a local review tool for videos your coding agent makes as code.",
+  "repository": "github:ryon-solos/codemotion",
+  "license": "MIT",
+  "type": "module",
+  "main": "server/main.js",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server/main.js",
+    "test": "node --test test/*.test.js",
+    "check": "node --check server/main.js"
+  }
+}
